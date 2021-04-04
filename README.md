@@ -4,10 +4,10 @@ Usage:
 
 
 ```swift
-let event = 
-
-analytics.log(Event(.pair)
-    .param(\.pairingState, .paired)
+let event = Event(.pair)
     .param(\.user, "1234")
-)
+    
+let context = EventContext(event)
+context.name // prints "pair"
+context.parameters // prints "{ 'user': '1234' }"
 ```
