@@ -9,7 +9,7 @@ public struct Event {
 }
 
 extension Event: EventModifier {
-    func push(to context: EventContext) {
+    func apply(to context: EventContext) {
         context.name = name
     }
 }

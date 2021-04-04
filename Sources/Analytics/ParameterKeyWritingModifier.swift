@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ParameterKeyWritingModifier<Value>: EventModifier {
+internal struct ParameterKeyWritingModifier<Value>: EventModifier {
 
     typealias ParameterKeyPath = WritableKeyPath<ParameterValues, Value>
 
@@ -12,7 +12,7 @@ public struct ParameterKeyWritingModifier<Value>: EventModifier {
         self.value = value
     }
 
-    internal func push(to context: EventContext) {
+    internal func apply(to context: EventContext) {
         var values = context.values
         values[keyPath: keyPath] = value
         context.values = values

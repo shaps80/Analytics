@@ -20,4 +20,3 @@ final class AnalyticsTests: XCTestCase {
         XCTAssert(context.values[SignInStateParameterKey.self] == "1234")
     }
 }
-

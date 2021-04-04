@@ -13,7 +13,7 @@ private extension EventModifier {
 }
 
 internal protocol EventModifier {
-    func push(to context: EventContext)
+    func apply(to context: EventContext)
 }
 
 public struct ModifiedEvent<Event, Modifier> {
@@ -27,11 +27,11 @@ public struct ModifiedEvent<Event, Modifier> {
 }
 
 extension ModifiedEvent: EventModifier where Modifier: EventModifier {
-    internal func push(to context: EventContext) {
-        modifier.push(to: context)
+    internal func apply(to context: EventContext) {
+        modifier.apply(to: context)
 
         if let event = event as? EventModifier {
-            event.push(to: context)
+            event.apply(to: context)
         }
     }
 }

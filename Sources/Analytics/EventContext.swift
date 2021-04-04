@@ -5,7 +5,7 @@ internal final class EventContext {
     var values: ParameterValues = .empty
 
     init<E: EventModifier>(_ event: E) {
-        event.push(to: self)
+        event.apply(to: self)
     }
 }
 
