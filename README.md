@@ -8,15 +8,15 @@ Views are defined very similarly to how you'd define a custom `Notification.Name
 
 ```swift
 extension Analytics.View {
-    static var taskList = Self(rawValue: "task-list") 
+    static var contactList = Self(rawValue: "contact-list") 
 }
 
-struct TaskListView: View {
+struct ContactListView: View {
     @Environment(\.analytics) private var log
     var body: some View {
         List { /* content hidden */ }
             .onAppear {
-                log(view: .taskList)
+                log(view: .contactList)
             }
     }
 }
@@ -83,6 +83,6 @@ Prints:
 
 interaction
 - action: submit
-- source: task-list
+- source: contact-list
 */
 ```

@@ -1,4 +1,6 @@
 import XCTest
+import SwiftUI
+
 @testable import Analytics
 
 final class Tests: XCTestCase {
@@ -27,4 +29,20 @@ final class MockAnalyticsObserver: AnalyticsObserver {
     }
 
     func log(interaction: Analytics.Interaction, values: AnalyticsValues) { }
+}
+
+enum Source {
+    case taskList
+}
+
+private struct SourceAnalyticsKey: AnalyticsKey {
+    typealias Value = Source
+    static let key: String = "source"
+}
+
+extension AnalyticsValues {
+    var source: Source? {
+        get { self[SourceAnalyticsKey.self] }
+        set { self[SourceAnalyticsKey.self] = newValue }
+    }
 }
