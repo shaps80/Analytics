@@ -18,13 +18,13 @@ public struct Analytics: Sendable {
         observers[ObjectIdentifier(observer)] = nil
     }
 
-    internal static func log(_ interaction: Interaction, values: AnalyticsValues) {
+    internal static func log(interaction: Interaction, values: AnalyticsValues) {
         observers.values.forEach {
             $0.object?.log(interaction: interaction, values: values)
         }
     }
 
-    internal static func log(_ view: View, values: AnalyticsValues) {
+    internal static func log(view: View, values: AnalyticsValues) {
         observers.values.forEach {
             $0.object?.log(view: view, values: values)
         }

@@ -28,7 +28,7 @@ import Foundation
 /// - Note: `AnalyticsKey` has no default value requirement, because the default value for a key is always nil.
 public protocol AnalyticsKey: Sendable {
     /// The associated type representing the type of the analytics key's value
-    associatedtype Value: Sendable = String
+    associatedtype Value: Sendable & CustomStringConvertible = String
     /// The string representation for this key that will be used in your analytics backend.
     static var key: String { get }
 }
@@ -43,7 +43,7 @@ public protocol AnalyticsKey: Sendable {
 ///     @Environment(\.analyticsValues) private var values
 ///
 public struct AnalyticsValues: Sendable {
-    public private(set) var params: [String: Sendable] = [:]
+    public private(set) var params: [String: Sendable & CustomStringConvertible] = [:]
     public init() { }
 
     /// Accesses the analytics value associated with a custom key.

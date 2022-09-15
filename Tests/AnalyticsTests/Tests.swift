@@ -11,28 +11,47 @@ final class Tests: XCTestCase {
     }
 
     func test() {
-        let expected = Analytics.View(rawValue: "view")
+        Analytics.log(view: .contactList, values: .init())
+        XCTAssertEqual(observer.eventName, Analytics.View.contactList.rawValue)
+        XCTAssertEqual(observer.params, [:])
 
-        observer.logView = { actual in
-            XCTAssertEqual(expected, actual)
-        }
+        var values = AnalyticsValues()
+        values.source = .contactList
 
-        Analytics.log(expected, values: .init())
+        Analytics.log(interaction: .submit, values: values)
+        XCTAssertEqual(observer.eventName, Analytics.Interaction.submit.rawValue)
+        XCTAssertEqual(observer.params, ["source": Source.contactList.rawValue])
     }
 }
 
-final class MockAnalyticsObserver: AnalyticsObserver {
-    var logView: (Analytics.View) -> Void = { _ in }
+final class MockAnalyticsObserver: AnalyticsObserver, @unchecked Sendable {
+    var eventName: String = ""
+    var params: [String: String] = [:]
 
     func log(view: Analytics.View, values: AnalyticsValues) {
-        logView(view)
+        eventName = view.rawValue
+        params = values.params.mapValues { "\($0)" }
+        print("\(view) | \(values.description)")
     }
 
-    func log(interaction: Analytics.Interaction, values: AnalyticsValues) { }
+    func log(interaction: Analytics.Interaction, values: AnalyticsValues) {
+        eventName = interaction.rawValue
+        params = values.params.mapValues { "\($0)" }
+        print("\(interaction) | \(values.description)")
+    }
 }
 
-enum Source {
-    case taskList
+extension Analytics.View {
+    static var contactList: Self { .init(rawValue: "contact-list") }
+}
+
+extension Analytics.Interaction {
+    static var submit: Self { .init(rawValue: "submit") }
+}
+
+enum Source: String, CustomStringConvertible {
+    case contactList = "contact-list"
+    var description: String { rawValue }
 }
 
 private struct SourceAnalyticsKey: AnalyticsKey {
