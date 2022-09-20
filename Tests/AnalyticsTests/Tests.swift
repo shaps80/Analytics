@@ -10,58 +10,40 @@ final class Tests: XCTestCase {
         Analytics.register(observer)
     }
 
-    func test() {
-        Analytics.log(view: .contactList, values: .init())
-        XCTAssertEqual(observer.eventName, Analytics.View.contactList.rawValue)
-        XCTAssertEqual(observer.params, [:])
-
+    func testLogEvent() {
         var values = AnalyticsValues()
-        values.source = .contactList
+        values[keyPath: \.source] = .contactList
 
-        Analytics.log(interaction: .submit, values: values)
-        XCTAssertEqual(observer.eventName, Analytics.Interaction.submit.rawValue)
-        XCTAssertEqual(observer.params, ["source": Source.contactList.rawValue])
+        Analytics.log(event: .view, values: values)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
+
+    func testLogEventAppendingValues() {
+        let action = AnalyticsAction(values: .init())
+        var values = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+        action(.view, appending: values)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
+
+    func testLogEventUnique() {
+        var values = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+
+        let action = AnalyticsAction(values: values)
+        action(.view, appending: values)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+        XCTAssertEqual(observer.params.count, 1)
     }
 }
 
-final class MockAnalyticsObserver: AnalyticsObserver, @unchecked Sendable {
-    var eventName: String = ""
-    var params: [String: String] = [:]
-
-    func log(view: Analytics.View, values: AnalyticsValues) {
-        eventName = view.rawValue
-        params = values.params.mapValues { "\($0)" }
-        print("\(view) | \(values.description)")
-    }
-
-    func log(interaction: Analytics.Interaction, values: AnalyticsValues) {
-        eventName = interaction.rawValue
-        params = values.params.mapValues { "\($0)" }
-        print("\(interaction) | \(values.description)")
-    }
+private struct ViewEvent: AnalyticsEvent {
+    var name: String { "view" }
 }
 
-extension Analytics.View {
-    static var contactList: Self { .init(rawValue: "contact-list") }
-}
-
-extension Analytics.Interaction {
-    static var submit: Self { .init(rawValue: "submit") }
-}
-
-enum Source: String, CustomStringConvertible {
-    case contactList = "contact-list"
-    var description: String { rawValue }
-}
-
-private struct SourceAnalyticsKey: AnalyticsKey {
-    typealias Value = Source
-    static let key: String = "source"
-}
-
-extension AnalyticsValues {
-    var source: Source? {
-        get { self[SourceAnalyticsKey.self] }
-        set { self[SourceAnalyticsKey.self] = newValue }
-    }
+extension AnalyticsEvent where Self == ViewEvent {
+    static var view: Self { .init() }
 }

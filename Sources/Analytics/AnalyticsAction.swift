@@ -7,31 +7,46 @@ import SwiftUI
 ///
 ///     struct ContactDetailView: View {
 ///         @Environment(\.analytics) private var log
+///
 ///         var body: some View {
 ///             List {
 ///                 Button("Submit") {
-///                     log(interaction: .submit)
+///                     log(.interaction)
 ///                 }
 ///             }
 ///             .onAppear {
-///                 log(view: .contactDetail)
+///                 log(.view)
 ///             }
 ///         }
 ///     }
 ///
+/// Sometimes you need custom logging behaviour, this can be achieved by defining a custom log method:
+///
+///     extension Analytics {
+///         struct Interaction: RawRepresentable {
+///             static var submit: Self { .init(rawValue: "submit") }
+///         }
+///     }
+///
+/// Then extend the action to include a custom `log` method that accepts your type:
+///
+///     extension AnalyticsAction {
+///         // we define a custom `log` method here to append additional params automatically
+///         func callAsFunction(interaction: Analytics.Interaction) {
+///             var values = self.values
+///             values[keyPath: \.interaction, interaction)
+///             callAsFunction(event: .interaction, appending: values)
+///         }
+///     }
+///
 public struct AnalyticsAction: Sendable {
-    fileprivate let values: AnalyticsValues
+    /// The current set of values
+    public let values: AnalyticsValues
 
-    /// Logs the specified `view` event
-    /// - Parameter view: The view event to log
-    public func callAsFunction(view: Analytics.View) {
-        Analytics.log(view: view, values: values)
-    }
-
-    /// Logs the specified `interaction` event
-    /// - Parameter interaction: The interaction event to log
-    public func callAsFunction(interaction: Analytics.Interaction) {
-        Analytics.log(interaction: interaction, values: values)
+    /// Logs the specified `event`
+    /// - Parameter event: The `event` to log
+    public func callAsFunction(_ event: AnalyticsEvent, appending values: AnalyticsValues? = nil) {
+        Analytics.log(event: event, values: values ?? .init())
     }
 }
 

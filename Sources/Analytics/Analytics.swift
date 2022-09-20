@@ -18,15 +18,9 @@ public struct Analytics: Sendable {
         observers[ObjectIdentifier(observer)] = nil
     }
 
-    internal static func log(interaction: Interaction, values: AnalyticsValues) {
+    internal static func log(event: AnalyticsEvent, values: AnalyticsValues) {
         observers.values.forEach {
-            $0.object?.log(interaction: interaction, values: values)
-        }
-    }
-
-    internal static func log(view: View, values: AnalyticsValues) {
-        observers.values.forEach {
-            $0.object?.log(view: view, values: values)
+            $0.object?.log(event: event, values: values)
         }
     }
 }
@@ -36,15 +30,9 @@ public struct Analytics: Sendable {
 public protocol AnalyticsObserver: AnyObject, Sendable {
     /// A 'view' event was logged
     /// - Parameters:
-    ///   - view: The 'view' event that was logged
+    ///   - view: The `event` that was logged
     ///   - values: All associated values (parameters) that were logged as a part of this event
-    func log(view: Analytics.View, values: AnalyticsValues)
-
-    /// A 'interaction' event was logged
-    /// - Parameters:
-    ///   - interaction: The 'interaction' event that was logged
-    ///   - values: All associated values (parameters) that were logged as a part of this event
-    func log(interaction: Analytics.Interaction, values: AnalyticsValues)
+    func log(event: AnalyticsEvent, values: AnalyticsValues)
 }
 
 private struct WeakBox: Sendable {
