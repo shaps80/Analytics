@@ -18,9 +18,29 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
+    
+    func testLogEventAction() {
+        var values = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+        var action = AnalyticsAction(values: values)
+
+        action(.view)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
+    
+    func testLogEventReplacing() {
+        var values = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+        var action = AnalyticsAction(values: values)
+
+        action(.view, replacing: values)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
 
     func testLogEventAppendingValues() {
-        let action = AnalyticsAction(values: .init())
+        var action = AnalyticsAction(values: .init())
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
         action(.view, appending: values)
@@ -32,7 +52,7 @@ final class Tests: XCTestCase {
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
 
-        let action = AnalyticsAction(values: values)
+        var action = AnalyticsAction(values: values)
         action(.view, appending: values)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])

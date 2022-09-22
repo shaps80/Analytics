@@ -91,3 +91,9 @@ extension AnalyticsValues: CustomDebugStringConvertible {
             .joined(separator: "\n")
     }
 }
+
+extension AnalyticsValues {
+    internal mutating func appending(_ newValues: Self) {
+        params.merge(newValues.params) { $1 }
+    }
+}
