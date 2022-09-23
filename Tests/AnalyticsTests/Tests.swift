@@ -34,7 +34,7 @@ final class Tests: XCTestCase {
         values[keyPath: \.source] = .contactList
         var action = AnalyticsAction(values: values)
 
-XCTAssertFalse(values.params.isEmpty)
+        XCTAssertFalse(values.params.isEmpty)
         action(.view, replacing: nil)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [:])
