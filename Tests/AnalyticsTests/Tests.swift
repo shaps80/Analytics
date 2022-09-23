@@ -38,6 +38,9 @@ XCTAssertFalse(values.params.isEmpty)
         action(.view, replacing: nil)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [:])
+        
+        action(.view)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
 
     func testLogEventAppendingValues() {
