@@ -56,10 +56,12 @@ final class Tests: XCTestCase {
         let action = AnalyticsAction(values: .init())
         var values = AnalyticsValues()
         var newValues = AnalyticsValues()
+        
         values[keyPath: \.source] = .contactList
         action(.view, appending: values)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+        
         newValues[keyPath: \.component] = .button
         action(.view, appending: newValues)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
