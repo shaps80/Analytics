@@ -22,7 +22,7 @@ final class Tests: XCTestCase {
     func testLogEventAction() {
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
-        var action = AnalyticsAction(values: values)
+        let action = AnalyticsAction(values: values)
 
         action(.view)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
@@ -35,7 +35,7 @@ final class Tests: XCTestCase {
         var action = AnalyticsAction(values: values)
 
         XCTAssertFalse(values.params.isEmpty)
-        action(.view, replacing: nil)
+        action(.view, replacing: .init())
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [:])
         
@@ -44,7 +44,7 @@ final class Tests: XCTestCase {
     }
 
     func testLogEventAppendingValues() {
-        var action = AnalyticsAction(values: .init())
+        let action = AnalyticsAction(values: .init())
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
         action(.view, appending: values)
@@ -56,7 +56,7 @@ final class Tests: XCTestCase {
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
 
-        var action = AnalyticsAction(values: values)
+        let action = AnalyticsAction(values: values)
         action(.view, appending: values)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
