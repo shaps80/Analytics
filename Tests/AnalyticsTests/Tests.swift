@@ -29,7 +29,7 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
     
-    func testLogEventReplacing() {
+    func testLogEventReplacingValues() {
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
         var action = AnalyticsAction(values: values)
