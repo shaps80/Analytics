@@ -57,7 +57,8 @@ public struct AnalyticsAction: Sendable {
     /// Logs the specified `event`
     /// - Parameters:
     ///    - event: The `event` to log
-    ///    - replacing: Any `values` to replace the existing `AnalyticsValues` in the `Environment`
+    ///    - replacing: The `values` to use when logging this `event`. 
+    ///.   This essentially overwrites any inherited values for _this log only'.
     public mutating func callAsFunction(_ event: AnalyticsEvent, replacing values: AnalyticsValues?) {
         Analytics.log(event: event, values: values ?? .init())
     }
