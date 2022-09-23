@@ -48,6 +48,7 @@ public struct AnalyticsAction: Sendable {
     ///    - event: The `event` to log
     ///    - appending: Any extra `values` to log with the existing `AnalyticsValues`
     public func callAsFunction(_ event: AnalyticsEvent, appending newValues: AnalyticsValues? = nil) {
+        var values = self.values
         if let newValues = newValues {
             values.appending(newValues)
         }
