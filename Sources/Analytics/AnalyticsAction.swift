@@ -60,8 +60,8 @@ public struct AnalyticsAction: Sendable {
     ///    - event: The `event` to log
     ///    - replacing: The `values` to use when logging this `event`. 
     ///.   This essentially overwrites any inherited values for _this log only'.
-    public mutating func callAsFunction(_ event: AnalyticsEvent, replacing values: AnalyticsValues?) {
-        Analytics.log(event: event, values: values ?? .init())
+    public mutating func callAsFunction(_ event: AnalyticsEvent, replacing values: AnalyticsValues) {
+        Analytics.log(event: event, values: values)
     }
 }
 
