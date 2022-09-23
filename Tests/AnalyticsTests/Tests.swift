@@ -51,6 +51,20 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
+    
+    func testLogEventAppendSubsequentLogValues() {
+        let action = AnalyticsAction(values: .init())
+        var values = AnalyticsValues()
+        var newValues = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+        action(.view, appending: values)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+        newValues[keyPath: \.component] = .button
+        action(.view, appending: newValues)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [ComponentAnalyticsKey.key: Component.button.rawValue])
+    }
 
     func testLogEventUnique() {
         var values = AnalyticsValues()
