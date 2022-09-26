@@ -29,7 +29,7 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
     
-    func testLogEventReplacingValues() {
+    func testLogEventActionWithReplacedValues() {
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
         var action = AnalyticsAction(values: values)
@@ -43,7 +43,7 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
 
-    func testLogEventAppendingValues() {
+    func testLogEventActionWithAppendedValues() {
         let action = AnalyticsAction(values: .init())
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
@@ -52,20 +52,20 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
     
-    func testLogEventAppendSubsequentLogValues() {
+    func testAppendedValuesClearForSubsequentLogs() {
         let action = AnalyticsAction(values: .init())
-        var values = AnalyticsValues()
         var newValues = AnalyticsValues()
         
-        values[keyPath: \.source] = .contactList
-        action(.view, appending: values)
-        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
-        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
-        
+        newValues[keyPath: \.source] = .contactList
         newValues[keyPath: \.component] = .button
         action(.view, appending: newValues)
+        
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
-        XCTAssertEqual(observer.params, [ComponentAnalyticsKey.key: Component.button.rawValue])
+        XCTAssertEqual(observer.params, [ComponentAnalyticsKey.key: Component.button.rawValue, SourceAnalyticsKey.key: Source.contactList.rawValue])
+        
+        action(.view)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [:])
     }
 
     func testLogEventUnique() {
