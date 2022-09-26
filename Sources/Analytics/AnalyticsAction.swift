@@ -41,12 +41,27 @@ import SwiftUI
 ///
 public struct AnalyticsAction: Sendable {
     /// The current set of values
-    public let values: AnalyticsValues
+    public private(set) var values: AnalyticsValues
 
     /// Logs the specified `event`
-    /// - Parameter event: The `event` to log
-    public func callAsFunction(_ event: AnalyticsEvent, appending values: AnalyticsValues? = nil) {
-        Analytics.log(event: event, values: values ?? .init())
+    /// - Parameters:
+    ///    - event: The `event` to log
+    ///    - appending: Any extra `values` to log with the existing `AnalyticsValues`
+    public func callAsFunction(_ event: AnalyticsEvent, appending newValues: AnalyticsValues? = nil) {
+        var values = self.values
+        if let newValues = newValues {
+            values.appending(newValues)
+        }
+        Analytics.log(event: event, values: values)
+    }
+    
+    /// Logs the specified `event`
+    /// - Parameters:
+    ///    - event: The `event` to log
+    ///    - replacing: The `values` to use when logging this `event`. 
+    ///.   This essentially overwrites any inherited values for _this log only'.
+    public mutating func callAsFunction(_ event: AnalyticsEvent, replacing values: AnalyticsValues) {
+        Analytics.log(event: event, values: values)
     }
 }
 

@@ -18,14 +18,54 @@ final class Tests: XCTestCase {
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
     }
+    
+    func testLogEventAction() {
+        var values = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+        let action = AnalyticsAction(values: values)
 
-    func testLogEventAppendingValues() {
+        action(.view)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
+    
+    func testLogEventActionWithReplacedValues() {
+        var values = AnalyticsValues()
+        values[keyPath: \.source] = .contactList
+        var action = AnalyticsAction(values: values)
+
+        XCTAssertFalse(values.params.isEmpty)
+        action(.view, replacing: .init())
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [:])
+        
+        action(.view)
+        XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
+
+    func testLogEventActionWithAppendedValues() {
         let action = AnalyticsAction(values: .init())
         var values = AnalyticsValues()
         values[keyPath: \.source] = .contactList
         action(.view, appending: values)
         XCTAssertEqual(observer.eventName, ViewEvent.view.name)
         XCTAssertEqual(observer.params, [SourceAnalyticsKey.key: Source.contactList.rawValue])
+    }
+    
+    func testAppendedValuesClearForSubsequentLogs() {
+        let action = AnalyticsAction(values: .init())
+        var newValues = AnalyticsValues()
+        
+        newValues[keyPath: \.source] = .contactList
+        newValues[keyPath: \.component] = .button
+        action(.view, appending: newValues)
+        
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [ComponentAnalyticsKey.key: Component.button.rawValue, SourceAnalyticsKey.key: Source.contactList.rawValue])
+        
+        action(.view)
+        XCTAssertEqual(observer.eventName, ViewEvent.view.name)
+        XCTAssertEqual(observer.params, [:])
     }
 
     func testLogEventUnique() {
