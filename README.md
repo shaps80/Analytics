@@ -78,3 +78,15 @@ interaction
 - source: app-tabs
 */
 ```
+
+## Append or replace params without `Environment` propergation
+```swift 
+var values = AnalyticsValues()
+values[keyPath: \.source] = .contactList
+
+// Adds/updates param values only for this particular `log`
+log(.view, appending: values)
+
+// Only uses these `values` and not any that are currently in the `enviroment` (replacing them for this particular `log`)
+log(.view, replacing: values)
+```
