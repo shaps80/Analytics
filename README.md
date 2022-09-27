@@ -84,7 +84,8 @@ interaction
 var values = AnalyticsValues()
 values[keyPath: \.source] = .contactList
 
-// You can append values for specific logs, while retaining any inherited values
+// You can append values to specific logs, while retaining any inherited values
+// note: any existing values with matching keys will have their values overwritten
 log(.view, appending: values)
 
 // Or you can replace the inherited values entirely for a specific log
