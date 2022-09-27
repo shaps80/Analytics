@@ -2,41 +2,34 @@
 
 A package that provides a type-safe Analytics API that's backend agnostic 
 
-## Track a view
+## Make an `AnalyticsEvent`
 
-Views are defined very similarly to how you'd define a custom `Notification.Name`
+Such as a view or interaction:
 
 ```swift
-extension Analytics.View {
-    static var contactList = Self(rawValue: "contact-list") 
+public extension Analytics {
+    struct View: AnalyticsEvent {
+        public var name: String { "view" }
+    }
 }
 
+public extension AnalyticsEvent where Self == Analytics.View {
+    static var view: Self { .init() }
+}
+```
+
+## Track an event
+
+From using the `Analytics.View` above you can simply do the following to log the event:
+
+```swift
 struct ContactListView: View {
     @Environment(\.analytics) private var log
     var body: some View {
         List { /* content hidden */ }
             .onAppear {
-                log(view: .contactList)
+                log(.view)
             }
-    }
-}
-```
-
-## Track an interaction
-
-Interactions are defined very similarly to how you'd define a custom `Notification.Name`
-
-```swift
-extension Analytics.Interaction {
-    static var submit = Self(rawValue: "submit")
-}
-
-struct SubmitButton: View {
-    @Environment(\.analytics) private var log
-    var body: some View {
-        Button("Submit") {
-            log(interaction: .submit)
-        }
     }
 }
 ```
@@ -60,7 +53,7 @@ extension AnalyticsValues {
 }
 ```
 
-Once defined, injecting the parameter into a `View` is all that's needed for it to be automatically added to all `view` and `interaction` events within that hierarchy.
+Once defined, injecting the parameter into a `View` is all that's needed for it to be automatically added to all `AnalyticsEvent`s events within that hierarchy.
 
 ```swift
 struct RootView: View {
@@ -75,14 +68,13 @@ struct RootView: View {
 
 ```swift
 Button("Submit") {
-    log(interaction: .submit)
+    log(.interaction)
 }
 
 /*
 Prints:
 
 interaction
-- action: submit
-- source: contact-list
+- source: app-tabs
 */
 ```
