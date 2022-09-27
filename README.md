@@ -79,14 +79,14 @@ interaction
 */
 ```
 
-## Append or replace params without `Environment` propergation
+## Append or replace params without `Environment` propagation
 ```swift 
 var values = AnalyticsValues()
 values[keyPath: \.source] = .contactList
 
-// Adds/updates param values only for this particular `log`
+// You can append values for specific logs, without modifiying inherited values
 log(.view, appending: values)
 
-// Only uses these `values` and not any that are currently in the `enviroment` (replacing them for this particular `log`)
+// Or you can replace the inherited values entirely for a specific log
 log(.view, replacing: values)
 ```
