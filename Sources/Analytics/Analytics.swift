@@ -28,9 +28,9 @@ public struct Analytics: Sendable {
 /// Represents an observer that can respond to Analytics events. Generally this would represent your backend (e.g Firebase, etc)
 /// but you can also use this to provide logging and debugging features.
 public protocol AnalyticsObserver: AnyObject, Sendable {
-    /// A 'view' event was logged
+    /// An event was logged
     /// - Parameters:
-    ///   - view: The `event` that was logged
+    ///   - event: The `event` that was logged
     ///   - values: All associated values (parameters) that were logged as a part of this event
     func log(event: AnalyticsEvent, values: AnalyticsValues)
 }
